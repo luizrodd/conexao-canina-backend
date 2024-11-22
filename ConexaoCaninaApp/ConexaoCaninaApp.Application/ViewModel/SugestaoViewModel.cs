@@ -1,8 +1,13 @@
 ﻿using ConexaoCaninaApp.Domain.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace ConexaoCaninaApp.Application.Dto
+namespace ConexaoCaninaApp.Application.ViewModel
 {
-    public class SugestaoDTO
+    public class SugestaoViewModel
     {
         public Guid SugestaoId { get; set; }
         public string Descricao { get; set; }

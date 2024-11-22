@@ -1,6 +1,8 @@
 ﻿using ConexaoCaninaApp.Application.Dto;
 using ConexaoCaninaApp.Application.Interfaces;
+using ConexaoCaninaApp.Application.Requests;
 using ConexaoCaninaApp.Application.Services;
+using ConexaoCaninaApp.Application.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using System.Reflection.PortableExecutable;
 
@@ -11,146 +13,100 @@ namespace ConexaoCaninaApp.API.Controllers
 	public class CaoController : ControllerBase
 	{
 		private readonly ICaoService _caoService;
-		private readonly IUserContextService _userContextService;
-
-		public CaoController(ICaoService caoService, IUserContextService userContextService)
+		
+		public CaoController(ICaoService caoService)
 		{
 			_caoService = caoService;
-			_userContextService = userContextService;
 		}
 
-
-		[HttpGet("{id}")]
-		public async Task<IActionResult> ObterCao(int id)
+		// GETALL
+		[HttpGet]
+        public async Task<IActionResult> GetAll()
 		{
-			var cao = await _caoService.ObterPorId(id);
-			if (cao == null)
+            var result = _caoService.GetAll();
+            if (result == null)
+                return NoContent();
+
+            return Ok(result.Select(x => new CaoViewModel
 			{
-				return NotFound();
-			}
-			return Ok(cao);
-			
-		}
+                DogId = x.CaoId,
+                Breed = x.Raca,
+                Age = x.Idade,
+				City = x.Cidade,
+                Description = x.Descricao,
+                Gender = x.Genero.ToString(),
+                Name = x.Nome,
+                Photos = x.Fotos.Select(f => new PhotoViewModel
+				{
+					CaminhoArquivo = f.CaminhoArquivo,
+                    Descricao = f.Descricao,
+                }).ToList(),
+				Size = x.Tamanho.ToString(),
+                State = x.Estado, 
+				UniqueCharacteristics = x.CaracteristicasUnicas,
+            }));
+        }
 
-		[HttpGet("{id}/detalhes")]
-		public async Task<IActionResult> ObterDetalhesCao(int id)
-		{
-			var cao = await _caoService.ObterPorId(id);
+        // GETBYID - DETALHES com Historico de Saude
+        [HttpGet]
+        [Route("{id}")]
+        public async Task<IActionResult> GetById(Guid id)
+        {
+            var result = _caoService.GetById(id);
+            if (result == null)
+                return NoContent();
 
-			if (cao == null)
-			{
-				return NotFound();
-			}
+            return Ok(new CaoDetalhesViewModel
+            {
+                DogId = result.CaoId,
+                Breed = result.Raca,
+                Age = result.Idade,
+                City = result.Cidade,
+                Description = result.Descricao,
+                Gender = result.Genero.ToString(),
+                Name = result.Nome,
+                Photos = result.Fotos.Select(f => new PhotoViewModel
+                {
+                    CaminhoArquivo = f.CaminhoArquivo,
+                    Descricao = f.Descricao,
+                }).ToList(),
+                Size = result.Tamanho.ToString(),
+                State = result.Estado,
+                UniqueCharacteristics = result.CaracteristicasUnicas,
+                HealthHistories = result.HistoricosDeSaude.Select(h => new HealthHistoryViewModel
+                {
+                    Exam = h.Exame,
+                    Vaccine = h.Vacina,
+                    ConditionsOfHealth = h.CondicoesDeSaude,
+                    OwnerConsent = h.ConsentimentoDono,
+                    ExamDate = h.DataExame,
+                }).ToList(),
+            });
+        }
+        // ALTERAR SOMENTE TAMANHO DO CAO
+        // ALTERAR IDADE DO CAO
+        [HttpPatch]
+        [Route("{id}/idade")]
+        public async Task<IActionResult> AlterarIdadeCao(Guid id, [FromBody] AlterarIdadeCaoRequest request)
+        {
+            if (request == null)
+                return BadRequest();
 
-			var detalhes = new
-			{
-				Nome = cao.Nome,
-				Raca = cao.Raca,
-				Idade = cao.Idade,
-				Sexo = cao.Genero,
-				Caracteristicas = cao.CaracteristicasUnicas,
-				Descricao = cao.Descricao
-			};
+            var result = _caoService.AlterarIdade(id, request.Idade);
 
-			return Ok(detalhes);
-		}
-		
+            return Ok();
+        }
 
-		[HttpGet("verificar-permissao/{caoId}/{usuarioId}")]
-		public async Task<IActionResult> VerificarPermissao(int caoId, int usuarioId)
-		{
-			var temPermissao = await _caoService.VerificarPerimissaoEdicao(caoId, usuarioId);
-			if (!temPermissao)
-			{
-				return Forbid(); // caso o usuario nao tiver permissao
-			}
+        // APROVAR CAO STATUS = APROVADO
+        [HttpPost]
+        [Route("{id}/aprovar")]
+        public async Task<IActionResult> AprovarCao(Guid id)
+        {
+            var result = _caoService.AprovarCao(id);
 
-			return Ok();
-		}
+            return Ok();
+        }
+        // REJEITAR CAO STATUS = REJEITAR
 
-		[HttpPost]
-		public async Task<IActionResult> AdicionarCao([FromBody] AdicionarCaoComModerarPerfilDto dto)
-		{
-			var cao = await _caoService.AdicionarCao(dto.CaoDto, dto.ModerarPerfilDto);
-			return CreatedAtAction(nameof(ObterCao), new { id = cao.CaoId }, cao);
-		}
-
-		[HttpPut("{id}/aprovar")]
-		public async Task<IActionResult> AprovarCao(int id)
-		{
-			await _caoService.AprovarCao(id);
-			return NoContent();
-		}
-
-		[HttpPut("editar")]
-		public async Task<IActionResult> EditarCao([FromBody] EditarCaoComModerarPerfilDto dto)
-		{
-			await _caoService.AtualizarCao(dto.EditarCaoDto, dto.ModerarPerfilDto);
-			return Ok();
-		}
-
-		[HttpPut("{id}/atualizar-informacoes")]
-		public async Task<IActionResult> AtualizarInformacoesBasicas(int id, [FromBody] AtualizarInformacoesBasicasDto dto)
-		{
-			try
-			{
-				await _caoService.AtualizarInformacoesBasicas(id, dto);
-				return NoContent(); // essa é a resposta padrão para as atualizações
-			}
-			catch (Exception ex)
-			{
-				return BadRequest(ex.Message);
-			}
-		}
-
-		[HttpPut("publicar/{id}")]
-		public async Task<IActionResult> PublicarCao(int id)
-		{
-			await _caoService.PublicarCao(id);
-			return Ok();
-		}
-
-
-		[HttpDelete("{id}")]
-		[ProducesResponseType(StatusCodes.Status200OK)]
-		[ProducesResponseType(StatusCodes.Status404NotFound)]
-
-		public async Task<IActionResult> ExcluirCao(int id)
-		{
-			await _caoService.ExcluirCao(id);
-			return Ok(new { message =
-				"Perfil excluído com sucesso. A exclusão é permanente"
-			});
-		}
-
-		[HttpPut("{id}/moderar")]
-		public async Task<IActionResult> ModerarPerfilCao(int id, [FromBody] ModerarPerfilDto moderarPerfilDto)
-		{
-			await _caoService.ModerarPerfil(id, moderarPerfilDto);
-			return NoContent();
-		}
-
-
-
-		[HttpPost("{caoId}/like")]
-		public async Task<IActionResult> DarLike(int caoId)
-		{
-			var usuarioIdString = _userContextService.GetUserId();
-			var usuarioId = int.Parse(usuarioIdString);
-			await _caoService.DarLike(caoId, usuarioId);
-			return Ok("Like adicionado com sucesso.");
-		}
-
-
-		[HttpDelete("{caoId}/like")]
-		public async Task<IActionResult> RemoverLike(int caoId)
-		{
-			var usuarioIdString = _userContextService.GetUserId();
-			var usuarioId = int.Parse(usuarioIdString);
-			await _caoService.RemoverLike(caoId, usuarioId);
-			return Ok("Like removido");
-		}
-
-
-	}
+    }
 }

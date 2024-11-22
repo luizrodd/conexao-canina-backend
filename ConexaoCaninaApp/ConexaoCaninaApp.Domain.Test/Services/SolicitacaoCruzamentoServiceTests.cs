@@ -49,7 +49,7 @@ namespace ConexaoCaninaApp.Domain.Test.Services
 			var cao = new Cao 
 			{
 				Nome = "Rex",
-				Proprietario = new Proprietario
+				Proprietario = new Usuario
 				{
 					Email = "proprietario@teste.com"
 				}
@@ -82,7 +82,7 @@ namespace ConexaoCaninaApp.Domain.Test.Services
 			{
 				CaoId = 1,
 				Nome = "Cão Teste",
-				Proprietario = new Proprietario { Email = "dono@teste.com" }
+				Proprietario = new Usuario { Email = "dono@teste.com" }
 			};
 
 			_mockSolicitacaoRepository
@@ -119,7 +119,7 @@ namespace ConexaoCaninaApp.Domain.Test.Services
 			{
 				CaoId = 1,
 				Nome = "PHG",
-				Proprietario = new Proprietario
+				Proprietario = new Usuario
 				{
 					Email = "dono@teste.com"
 				}
@@ -145,7 +145,7 @@ namespace ConexaoCaninaApp.Domain.Test.Services
 			var solicitacaoId = 1;
 			var solicitacao = new SolicitacaoCruzamento
 			{
-				SolicitacaoId = solicitacaoId,
+				SolicitacaoCruzamentoId = solicitacaoId,
 				UsuarioId = solicitacaoId,
 				CaoId = 1,
 				Status = StatusSolicitacao.Pendente
@@ -170,7 +170,7 @@ namespace ConexaoCaninaApp.Domain.Test.Services
 			var solicitacaoId = 1;
 			var solicitacao = new SolicitacaoCruzamento
 			{
-				SolicitacaoId = solicitacaoId,
+				SolicitacaoCruzamentoId = solicitacaoId,
 				UsuarioId = 1,
 				CaoId = 1,
 				Usuario = new Usuario
@@ -199,7 +199,7 @@ namespace ConexaoCaninaApp.Domain.Test.Services
 			var solicitacaoId = 1;
 			var solicitacao = new SolicitacaoCruzamento
 			{
-				SolicitacaoId = solicitacaoId,
+				SolicitacaoCruzamentoId = solicitacaoId,
 				UsuarioId = 1,
 				CaoId = 1,
 				Usuario = new Usuario
@@ -254,7 +254,7 @@ namespace ConexaoCaninaApp.Domain.Test.Services
 			var solicitacaoId = 1;
 			var solicitacao = new SolicitacaoCruzamento
 			{
-				SolicitacaoId = solicitacaoId,
+				SolicitacaoCruzamentoId = solicitacaoId,
 				UsuarioId = solicitacaoId,
 				CaoId = 1,
 				Status = StatusSolicitacao.Pendente

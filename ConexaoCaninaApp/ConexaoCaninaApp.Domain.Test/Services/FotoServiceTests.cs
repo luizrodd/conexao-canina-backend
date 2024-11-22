@@ -144,10 +144,10 @@ namespace ConexaoCaninaApp.Domain.Test.Services
         {
             // ARRANGE 
 
-            var fotos = new List<FotoDto>
+            var fotos = new List<FotoDTO>
             {
-                new FotoDto { FotoId= 1, Ordem = 2 },
-				new FotoDto { FotoId= 2, Ordem = 1 }
+                new FotoDTO { FotoId= 1, Ordem = 2 },
+				new FotoDTO { FotoId= 2, Ordem = 1 }
 			};
 
             var foto1 = new Foto { FotoId = 1, Ordem = 1 };
@@ -202,10 +202,10 @@ namespace ConexaoCaninaApp.Domain.Test.Services
                 CriarArquivoMock("foto2.jpg")
             };
 
-            var fotosExistentes = new List<FotoDto>
+            var fotosExistentes = new List<FotoDTO>
             {
-                new FotoDto { FotoId = 1, Ordem = 1 },
-                new FotoDto { FotoId = 2, Ordem = 2 }
+                new FotoDTO { FotoId = 1, Ordem = 1 },
+                new FotoDTO { FotoId = 2, Ordem = 2 }
             };
 
             _mockFotoRepository.Setup(r => r.ObterPorId(It.IsAny<int>()))

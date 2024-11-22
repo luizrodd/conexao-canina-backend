@@ -9,13 +9,17 @@ namespace ConexaoCaninaApp.Application.Dto
 {
 	public class CaoDto
 	{
-		public string Nome { get; set; }
+        public Guid CaoId { get; set; }
+        public string Nome { get; set; }
 		public string Raca { get; set; }
 		public int Idade { get; set; }
 		public string Descricao { get; set; }
-		public int Genero { get; set; } // 1-M, 2-F
+		public GeneroCao Genero { get; set; } 
 		public TamanhoCao Tamanho { get; set; }
 		public string CaracteristicasUnicas { get; set; }
-		public int ProprietarioId { get; set; }
-	}
+		public string Cidade { get; set; }
+		public string Estado { get; set; }
+		public List<FotoDTO> Fotos { get; set; }
+        public IEnumerable<HistoricoDeSaudeDTO> HistoricosDeSaude { get; set; }
+    }
 }

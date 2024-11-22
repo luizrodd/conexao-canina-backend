@@ -282,7 +282,7 @@ namespace ConexaoCaninaApp.Domain.Test.Services
                     new Foto { FotoId = 1, CaminhoArquivo = "/uploads/foto1.jpg" },
                     new Foto { FotoId = 2, CaminhoArquivo = "/uploads/foto2.jpg" }
                 },
-                Proprietario = new Proprietario { Email = "dono@teste.com" }
+                Proprietario = new Usuario { Email = "dono@teste.com" }
             };
 
             _mockCaoRepository.Setup(r => r.ObterPorId(caoId)).ReturnsAsync(cao);
@@ -310,7 +310,7 @@ namespace ConexaoCaninaApp.Domain.Test.Services
                 // ARRANGE 
                 CaoId = caoId,
                 Nome = "Imperador Supremo PHG",
-                Proprietario = new Proprietario { Email = "dono@teste.com" }
+                Proprietario = new Usuario { Email = "dono@teste.com" }
             };
 
             _mockCaoRepository.Setup(r => r.ObterPorId(caoId)).ReturnsAsync(cao);
@@ -509,8 +509,8 @@ namespace ConexaoCaninaApp.Domain.Test.Services
 			var cao = new Cao
 			{
 				CaoId = caoId,
-				Likes = new List<Like>(),
-				Proprietario = new Proprietario
+				Likes = new List<Favorito>(),
+				Proprietario = new Usuario
 				{
 					Email = "dono@exemplo.com"
 				},
@@ -537,8 +537,8 @@ namespace ConexaoCaninaApp.Domain.Test.Services
 			var cao = new Cao
 			{
 				CaoId = caoId,
-				Likes = new List<Like> { like },
-				Proprietario = new Proprietario
+				Likes = new List<Favorito> { like },
+				Proprietario = new Usuario
 				{
 					Email = "dono@exemplo.com"
 				},
@@ -561,7 +561,7 @@ namespace ConexaoCaninaApp.Domain.Test.Services
 			var caoId = 1;
 			var usuarioId = 1;
 			var like = new Like { UsuarioId = usuarioId };
-			var cao = new Cao { CaoId = caoId, Likes = new List<Like> { like } };
+			var cao = new Cao { CaoId = caoId, Likes = new List<Favorito> { like } };
 
             _mockCaoRepository.Setup(repo => repo.ObterPorId(caoId)).ReturnsAsync(cao);
 
@@ -578,8 +578,8 @@ namespace ConexaoCaninaApp.Domain.Test.Services
 			var cao = new Cao
 			{
 				CaoId = caoId,
-				Likes = new List<Like>(),
-				Proprietario = new Proprietario
+				Likes = new List<Favorito>(),
+				Proprietario = new Usuario
 				{
 					Email = "dono@exemplo.com"
 				},

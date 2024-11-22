@@ -5,44 +5,26 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace ConexaoCaninaApp.Infra.Data.Repositories
 {
-	public class CaoRepository : ICaoRepository
-	{
-		private readonly ApplicationDbContext _context;
-		public CaoRepository(ApplicationDbContext context)
-		{
-			_context = context;
-		}
+    public class CaoRepository : Repository<Cao, Guid>, ICaoRepository
+    {
+        public CaoRepository(ApplicationDbContext context) : base(context)
+        {
+        }
 
-		public async Task Adicionar(Cao cao)
-		{
-			_context.Caes.Add(cao);
-			await _context.SaveChangesAsync();
-		}
+        public override List<Cao> GetAll()
+        {
+            return _entity.Include(x => x.Fotos).ToList();
+        }
 
-		public async Task<Cao> ObterPorId(int id)
-		{
-			return await _context.Caes
-				.Include(c => c.Fotos)
-				.Include(c => c.Proprietario)
-				.Include(c => c.Likes)
-				.FirstOrDefaultAsync(c => c.CaoId == id);
-		}
-
-		public async Task Atualizar(Cao cao)
-		{
-			_context.Caes.Update(cao);
-			await _context.SaveChangesAsync();
-		}
-
-		public async Task Remover(Cao cao)
-		{
-			_context.Caes.Remove(cao);
-			await _context.SaveChangesAsync();
-		}
-	}
+        public override Cao GetById(Guid id)
+        {
+            return _entity.Include(x => x.Fotos).Include(x => x.HistoricosDeSaude).FirstOrDefault(x => x.CaoId == id);
+        }
+    }
 }

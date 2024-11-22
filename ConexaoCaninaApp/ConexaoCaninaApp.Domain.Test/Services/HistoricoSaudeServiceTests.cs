@@ -41,14 +41,14 @@ namespace ConexaoCaninaApp.Domain.Test.Services
 
             await _historicoSaudeService.AdicionarHistoricoSaude(novoHistoricoDto);
 
-            _mockHistoricoSaudeRepository.Verify(r => r.AdicionarHistorico(It.IsAny<HistoricoSaude>()), Times.Once);
+            _mockHistoricoSaudeRepository.Verify(r => r.AdicionarHistorico(It.IsAny<HistoricoDeSaude>()), Times.Once);
         }
 
         [Fact]
         public async Task ObterHistoricoSaude_Deve_Retornar_Historico_Se_Consentimento_Existe()
         {
             var caoId = 1;
-            var historicoEsperado = new List<HistoricoSaude>
+            var historicoEsperado = new List<HistoricoDeSaude>
             {
                 new HistoricoSaude
                 {
@@ -122,7 +122,7 @@ namespace ConexaoCaninaApp.Domain.Test.Services
             // ASSERT
 
             _mockHistoricoSaudeRepository.Verify(
-                r => r.Atualizar(It.IsAny<HistoricoSaude>()), Times.Once);
+                r => r.Atualizar(It.IsAny<HistoricoDeSaude>()), Times.Once);
 
             Assert.Equal("Exame atualizado", historicoSaude.Exame);
 		}
